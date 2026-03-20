@@ -1,0 +1,101 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>SMS Hazard Reporting Dashboard</h1>
+    <div class="last-updated">
+      Last Updated: {{ lastUpdated | date:'short' }}
+    </div>
+  </div>
+
+  <div class="filters-section">
+    <h2>Filters</h2>
+    
+    <div class="filter-group">
+      <label for="riskScoreFilter">Risk Score:</label>
+      <select
+        id="riskScoreFilter"
+        [(ngModel)]="riskScoreFilter"
+        (change)="applyFilters()"
+      >
+        <option [ngValue]="null">All Risk Scores</option>
+        <option *ngFor="let score of uniqueRiskScores" [ngValue]="score">
+          {{ score }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="departmentFilter">Responsible Department:</label>
+      <select
+        id="departmentFilter"
+        [(ngModel)]="departmentFilter"
+        (change)="applyFilters()"
+      >
+        <option value="">All Departments</option>
+        <option *ngFor="let dept of uniqueDepartments" [ngValue]="dept">
+          {{ dept }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="daysOpenFilter">Days Open:</label>
+      <input
+        id="daysOpenFilter"
+        type="number"
+        [(ngModel)]="daysOpenFilter"
+        (change)="applyFilters()"
+        placeholder="Enter days or leave empty"
+      />
+    </div>
+
+    <button (click)="clearFilters()" class="clear-btn">Clear Filters</button>
+  </div>
+
+  <div class="results-section">
+    <h2>Hazard Records ({{ filteredRecords.length }} results)</h2>
+    
+    <div *ngIf="filteredRecords.length === 0" class="no-results">
+      No records match the selected filters.
+    </div>
+
+    <table *ngIf="filteredRecords.length > 0" class="hazard-table">
+      <thead>
+        <tr>
+          <th>Date Raised</th>
+          <th>Record ID</th>
+          <th>Concern / Hazard</th>
+          <th>Risk Score</th>
+          <th>Responsible DEPT</th>
+          <th>Date of SAT</th>
+          <th>Actions</th>
+          <th>Escalated to SRB</th>
+          <th>Status</th>
+          <th>Days Open</th>
+          <th>Hazard Completion</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let record of filteredRecords" class="hazard-row">
+          <td>{{ record.dateRaised }}</td>
+          <td>{{ record.recordId }}</td>
+          <td>{{ record.concern }}</td>
+          <td>
+            <span
+              class="risk-score"
+              [style.backgroundColor]="getRiskScoreColor(record.riskScore)"
+            >
+              {{ record.riskScore }}
+            </span>
+          </td>
+          <td>{{ record.responsibleDept }}</td>
+          <td>{{ record.dateOfSat }}</td>
+          <td>{{ record.actions }}</td>
+          <td>{{ record.escalatedToSrb }}</td>
+          <td>{{ record.status }}</td>
+          <td>{{ record.daysOpen }}</td>
+          <td>{{ record.hazardCompletion }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
